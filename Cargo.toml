@@ -72,3 +72,6 @@ harness = false
 
 [workspace]
 members = ["dev-tools"]
+
+[profile.release]
+debug = 1
