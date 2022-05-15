@@ -31,18 +31,18 @@ pub(crate) fn egcd(mut a: UBig, mut b: UBig) -> UBig {
 }
 
 fn bench() {
-    let mut s = 0;
-    let mut rng = StdRng::seed_from_u64(1);
+    let mut s = ubig!(0);
+    let mut rng = StdRng::seed_from_u64(3);
     let bits = 10usize.pow(5);
     for _ in 0..4 {
         let a = random_ubig(bits, &mut rng);
         let b = random_ubig(bits, &mut rng);
         // let g = a.gcd(b);
         let g = egcd(a, b);
-        s += g.trailing_zeros().unwrap();
+        s += g;
     }
 
-    println!("sum trailing zeros: {}", s);
+    println!("sum: {}", s);
 }
 
 fn main() {

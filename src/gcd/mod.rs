@@ -71,6 +71,7 @@ pub(crate) fn xgcd_word_by_word(a: Word, b: Word, bonly: bool) -> (Word, SignedW
 ///
 /// The result is stored in the low bits of lhs.
 /// The word length of the result number is returned.
+#[inline]
 pub(crate) fn gcd_in_place(lhs: &mut [Word], rhs: &mut [Word]) -> usize {
     binary::gcd_in_place(lhs, rhs)
 }
@@ -83,6 +84,7 @@ pub(crate) fn gcd_in_place(lhs: &mut [Word], rhs: &mut [Word]) -> usize {
 /// Specifically if g = gcd(lhs, rhs), lhs * a + rhs * b = g, then a is stored in **rhs**, b is stored in **lhs**,
 /// and the returned tuple is (sign of a, sign of b)
 // TODO: add bonly option
+#[inline]
 pub(crate) fn xgcd_in_place(
     lhs: &mut [Word],
     rhs: &mut [Word],
@@ -93,6 +95,7 @@ pub(crate) fn xgcd_in_place(
 }
 
 /// Memory requirement for division.
+#[inline]
 pub(crate) fn memory_requirement_exact(lhs_len: usize, rhs_len: usize) -> Layout {
     binary::memory_requirement_up_to(lhs_len, rhs_len)
 }

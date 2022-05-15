@@ -47,7 +47,9 @@ pub(crate) fn gcd_in_place(lhs: &mut [Word], rhs: &mut [Word]) -> usize {
 
                     // truncate trailing zeros
                     let zeros = trailing_zeros_large(lhs_cur);
-                    lhs_cur = &mut lhs_cur[zeros / WORD_BITS_USIZE..];
+                    if zeros / WORD_BITS_USIZE > 0 {
+                        lhs_cur = &mut lhs_cur[zeros / WORD_BITS_USIZE..];
+                    }
                     shift::shr_in_place(lhs_cur, (zeros % WORD_BITS_USIZE) as u32);
 
                     // truncate leading zeros
@@ -62,7 +64,9 @@ pub(crate) fn gcd_in_place(lhs: &mut [Word], rhs: &mut [Word]) -> usize {
 
                     // truncate trailing zeros
                     let zeros = trailing_zeros_large(rhs_cur);
-                    rhs_cur = &mut rhs_cur[zeros / WORD_BITS_USIZE..];
+                    if zeros / WORD_BITS_USIZE > 0 {
+                        rhs_cur = &mut rhs_cur[zeros / WORD_BITS_USIZE..];
+                    }
                     shift::shr_in_place(rhs_cur, (zeros % WORD_BITS_USIZE) as u32);
 
                     // truncate leading zeros
