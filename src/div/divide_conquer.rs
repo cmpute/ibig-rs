@@ -109,7 +109,7 @@ fn div_rem_in_place_small_quotient(
     let m = lhs.len() - n;
     assert!(m < n);
     if m <= div::MAX_LEN_SIMPLE {
-        return div::simple::div_rem_in_place2(lhs, rhs, fast_div_rhs_top);
+        return div::simple::div_rem_in_place(lhs, rhs, fast_div_rhs_top);
     }
     // Use top m words of the divisor to get a quotient approximation. It may be too large by at most 2.
     // Quotient is in lhs[n..], remainder in lhs[..n].

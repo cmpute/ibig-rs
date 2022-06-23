@@ -17,21 +17,14 @@ const MAX_LEN_SIMPLE: usize = 32;
 
 /// Normalize a large divisor.
 ///
-/// Returns (shift, fast division for the top word).
-pub(crate) fn normalize_large(words: &mut [Word]) -> (u32, FastDivideNormalized) {
+/// Returns (shift, fast division for the top words).
+pub(crate) fn normalize_large(words: &mut [Word]) -> (u32, FastDivideNormalized2) {
     assert!(words.len() >= 2);
     let shift = words.last().unwrap().leading_zeros();
     let overflow = shift::shl_in_place(words, shift);
-    assert!(overflow == 0);
-    (shift, FastDivideNormalized::new(*words.last().unwrap()))
-}
-
-pub(crate) fn normalize_large2(words: &mut [Word]) -> (u32, FastDivideNormalized2) {
-    assert!(words.len() >= 2);
-    let shift = words.last().unwrap().leading_zeros();
-    let overflow = shift::shl_in_place(words, shift);
-    assert!(overflow == 0);
-    (shift, FastDivideNormalized2::new(double_word(words[words.len() - 2], words[words.len() - 1])))
+    debug_assert!(overflow == 0);
+    let top_words = double_word(words[words.len() - 2], words[words.len() - 1]);
+    (shift, FastDivideNormalized2::new(top_words))
 }
 
 /// words = words / rhs
@@ -138,24 +131,13 @@ pub(crate) fn memory_requirement_exact(lhs_len: usize, rhs_len: usize) -> Layout
 pub(crate) fn div_rem_in_place(
     lhs: &mut [Word],
     rhs: &[Word],
-    fast_div_rhs_top: FastDivideNormalized,
-    memory: &mut Memory,
-) -> bool {
-    assert!(lhs.len() >= rhs.len() && rhs.len() >= 2);
-    simple::div_rem_in_place(lhs, rhs, fast_div_rhs_top)
-}
-
-#[must_use]
-pub(crate) fn div_rem_in_place2(
-    lhs: &mut [Word],
-    rhs: &[Word],
     fast_div_rhs_top: FastDivideNormalized2,
     memory: &mut Memory,
 ) -> bool {
     assert!(lhs.len() >= rhs.len() && rhs.len() >= 2);
 
     if rhs.len() <= MAX_LEN_SIMPLE || lhs.len() - rhs.len() <= MAX_LEN_SIMPLE {
-        simple::div_rem_in_place2(lhs, rhs, fast_div_rhs_top)
+        simple::div_rem_in_place(lhs, rhs, fast_div_rhs_top)
     } else {
         divide_conquer::div_rem_in_place(lhs, rhs, fast_div_rhs_top, memory)
     }
