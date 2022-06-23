@@ -1,4 +1,4 @@
-//! Simple division algorithm.
+//! Simple (School book) division algorithm.
 
 use crate::{
     add,
@@ -47,7 +47,7 @@ pub(crate) fn div_rem_in_place(
 
         // Approximate the next word of quotient by
         // q = floor([lhs0, lhs1, lhs2] / [rhs0, rhs1])
-        // q may be too large, but never too small
+        // q may be too large (by 1), but never too small
         let mut q = if &lhs0 < rhs_top {
             fast_div_rhs_top.div_rem((lhs2, lhs01)).0
         } else {
