@@ -36,7 +36,7 @@ pub(crate) fn div_rem_in_place(
     let quotient_carry = cmp::cmp_same_len(&lhs[lhs_len - n..], rhs) >= Ordering::Equal;
     if quotient_carry {
         let overflow = add::sub_same_len_in_place(&mut lhs[lhs_len - n..], rhs);
-        assert!(!overflow);
+        debug_assert!(!overflow);
     }
 
     while lhs_len > n {

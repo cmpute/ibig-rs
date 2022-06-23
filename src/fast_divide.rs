@@ -280,12 +280,12 @@ impl FastDivideNormalized2 {
         // The first guess of quotient is q1 + 1
         // if r1 >= q0 { r += d; } else { q1 += 1; }
         // In a branch-free way:
-        // decrease = 0xffff.fff = -1 if r1 >= q0, 0 otherwise
+        // decrease = 0 if r1 >= q0, = 0xffff.fff = -1 otherwise
         let (_, r1) = split_double_word(r);
         let (_, decrease) =
-            split_double_word(extend_word(q0).wrapping_sub(extend_word(r1)));
-        let mut q1 = q1.wrapping_sub(!decrease);
-        let mut r = r.wrapping_add(double_word(decrease, decrease) & self.divisor);
+            split_double_word(extend_word(r1).wrapping_sub(extend_word(q0)));
+        let mut q1 = q1.wrapping_sub(decrease);
+        let mut r = r.wrapping_add(double_word(!decrease, !decrease) & self.divisor);
 
         // the following fix step is unlikely to happen
         if r >= self.divisor {
@@ -320,6 +320,9 @@ mod tests {
 
     #[test]
     fn test_fast_divide_normalized() {
+        let fast_div = FastDivideNormalized::new(Word::MAX);
+        assert_eq!(fast_div.div_rem(0), (0, 0));
+
         let mut rng = StdRng::seed_from_u64(1);
         for _ in 0..1000000 {
             let d = rng.gen_range(Word::MAX / 2 + 1..=Word::MAX);
@@ -333,6 +336,10 @@ mod tests {
 
     #[test]
     fn test_fast_divide_normalized2() {
+        let d = DoubleWord::MAX;
+        let fast_div = FastDivideNormalized2::new(d);
+        assert_eq!(fast_div.div_rem((0, 0)), (0, 0));
+
         let mut rng = StdRng::seed_from_u64(1);
         for _ in 0..100000 {
             let d = rng.gen_range(DoubleWord::MAX / 2 + 1..=DoubleWord::MAX);
