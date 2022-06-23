@@ -77,7 +77,7 @@ fn bench_div(criterion: &mut Criterion) {
     for log_bits in 1..=6 {
         let bits = 10usize.pow(log_bits);
         let a = random_ubig(2 * bits, &mut rng);
-        let b = random_ubig(rng.gen_range(bits..2 * bits), &mut rng);
+        let b = random_ubig(bits, &mut rng);
         group.bench_with_input(BenchmarkId::from_parameter(bits), &bits, |bencher, _| {
             bencher.iter(|| black_box(&a).div_rem(black_box(&b)))
         });
