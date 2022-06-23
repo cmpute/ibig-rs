@@ -4,7 +4,7 @@ use crate::{
     add,
     arch::word::{SignedWord, Word},
     div,
-    fast_divide::FastDivideNormalized,
+    fast_divide::FastDivideNormalized2,
     memory::Memory,
     mul,
     sign::Sign::*,
@@ -35,7 +35,7 @@ pub(crate) fn memory_requirement_exact(lhs_len: usize, rhs_len: usize) -> Layout
 pub(crate) fn div_rem_in_place(
     lhs: &mut [Word],
     rhs: &[Word],
-    fast_div_rhs_top: FastDivideNormalized,
+    fast_div_rhs_top: FastDivideNormalized2,
     memory: &mut Memory,
 ) -> bool {
     assert!(lhs.len() > rhs.len() + div::MAX_LEN_SIMPLE && rhs.len() > div::MAX_LEN_SIMPLE);
@@ -67,7 +67,7 @@ pub(crate) fn div_rem_in_place(
 fn div_rem_in_place_same_len(
     lhs: &mut [Word],
     rhs: &[Word],
-    fast_div_rhs_top: FastDivideNormalized,
+    fast_div_rhs_top: FastDivideNormalized2,
     memory: &mut Memory,
 ) -> bool {
     let n = rhs.len();
@@ -101,7 +101,7 @@ fn div_rem_in_place_same_len(
 fn div_rem_in_place_small_quotient(
     lhs: &mut [Word],
     rhs: &[Word],
-    fast_div_rhs_top: FastDivideNormalized,
+    fast_div_rhs_top: FastDivideNormalized2,
     memory: &mut Memory,
 ) -> bool {
     let n = rhs.len();
@@ -109,7 +109,7 @@ fn div_rem_in_place_small_quotient(
     let m = lhs.len() - n;
     assert!(m < n);
     if m <= div::MAX_LEN_SIMPLE {
-        return div::simple::div_rem_in_place(lhs, rhs, fast_div_rhs_top);
+        return div::simple::div_rem_in_place2(lhs, rhs, fast_div_rhs_top);
     }
     // Use top m words of the divisor to get a quotient approximation. It may be too large by at most 2.
     // Quotient is in lhs[n..], remainder in lhs[..n].
